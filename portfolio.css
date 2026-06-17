@@ -1,0 +1,940 @@
+/* ============================================================
+   PORTFOLIO — MASTER STYLESHEET
+   Structure: Reset → Tokens → Global → Sections 1-6 → Responsive
+   ============================================================ */
+
+
+/* ── 1. RESET & BASE ──────────────────────────────────────── */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  overflow: hidden;
+  background-color: #08080a;
+}
+
+
+/* ── 2. DESIGN TOKENS ─────────────────────────────────────── */
+/* Edit here — values propagate everywhere they're used */
+
+:root {
+  --c-accent:    #00e5ff;
+  --c-bg:        #08080a;
+  --c-glass:     rgba(255, 255, 255, 0.03);
+  --c-border:    rgba(255, 255, 255, 0.06);
+  --c-text:      rgba(255, 255, 255, 0.85);
+  --c-muted:     rgba(255, 255, 255, 0.55);
+  --blur-sm:     8px;
+  --blur-md:     12px;
+  --blur-lg:     16px;
+  --spring:      cubic-bezier(0.25, 1, 0.5, 1);
+  --dock-bottom: 30px;
+}
+
+
+/* ── 3. FULL-PAGE SECTION FRAME ───────────────────────────── */
+/* Applied to every <section> — centres content, snaps to viewport */
+
+.section {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: transparent;
+}
+
+
+/* ── 4. TYPOGRAPHY ────────────────────────────────────────── */
+
+/* Primary H1 display heading used across all sections */
+.color-name {
+  font-family: "Nunito", sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  display: flex;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Each letter wrapped by the GSAP splitter for stagger animation */
+.color-name span {
+  display: inline-block;
+  transform-origin: center;
+  will-change: transform, opacity, filter;
+}
+
+/* Eyebrow label above each section heading (monospace caps) */
+.section-label {
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+}
+
+/* Flex column that wraps the eyebrow + H1 in every section header */
+.section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+
+/* ── 5. SHARED GLASS CARD BASE ────────────────────────────── */
+/* Used by .process-card, .faq-disclosure-node, and any future cards */
+
+.tile {
+  background: var(--c-glass);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  will-change: auto;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.tile:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+
+/* ── 6. SHARED PROJECT BUTTONS ────────────────────────────── */
+/* All three action buttons (Live / Code / Case Study) share this base */
+
+.btn-primary,
+.btn-secondary,
+.btn-case-study {
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  height: 40px;
+  width: 150px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 100px;
+  cursor: pointer;
+  outline: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  transition:
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-case-study:hover { background: rgba(255, 255, 255, 0.5); }
+
+.btn-primary:active,
+.btn-secondary:active,
+.btn-case-study:active {
+  background: aquamarine;
+  border-color: rgb(175, 255, 228);
+  transform: scale(0.96);
+}
+
+
+/* ── 7. LOADING SCREEN ────────────────────────────────────── */
+/* Covers the page on first load; GSAP fades + slides it away */
+
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background-color: #111111;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loader-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #333;
+  border-top-color: #0ae;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+
+/* ── 8. FIXED BACKGROUND CANVAS ───────────────────────────── */
+/* Holds the four SVG orbs — fixed behind all sections at z-index -1 */
+
+.bg-canvas-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.bg-canvas-wrapper svg { width: 100%; height: 100%; }
+
+
+/* ── 9. NAVIGATION DOCK ───────────────────────────────────── */
+/* Slides up from below on first scroll — stays fixed thereafter */
+
+.nav-dock-wrapper {
+  position: fixed;
+  bottom: var(--dock-bottom);
+  left: 50%;
+  transform: translateX(-50%) translateY(150px); /* hidden off-screen initially */
+  z-index: 5000;
+  transform-origin: bottom center;
+  will-change: transform;
+}
+
+.nav-dock {
+  display: flex;
+  align-items: center;
+  background: #f5f5f7;
+  padding: 8px 12px;
+  border-radius: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.02);
+  gap: 10px;
+}
+
+.nav-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  color: #1d1d1f;
+  cursor: pointer;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-item svg { width: 24px; height: 24px; stroke-width: 1.75; z-index: 2; }
+
+/* Sliding pill that moves beneath the active nav icon */
+.nav-active-pill {
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  background: #b3d7f0;
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Glass tooltip bubble above each icon — shown on hover via GSAP */
+.tooltip {
+  position: absolute;
+  bottom: 70px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  color: #fff;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ── SECTION 1: HOME ──────────────────────────────────────── */
+
+/* Bouncing arrow that prompts the user to scroll */
+.scroll-indicator {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.scroll-text {
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+.scroll-arrow {
+  width: 18px;
+  height: 18px;
+  color: #ffffff;
+  opacity: 0.9;
+  animation: bounceArrow 2s infinite ease-in-out;
+}
+
+@keyframes bounceArrow {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(6px); }
+}
+
+
+/* ── SECTION 2: PROCESS ───────────────────────────────────── */
+
+.section.sec2 { padding: 60px 40px; }
+
+.process-container {
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 30px;
+}
+
+/* 3-column × 2-row grid of process step cards */
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 24px;
+  width: 100%;
+  height: 60vh; /* leaves breathing room above the dock */
+}
+
+/* Process card — extends .tile with deeper blur and cyan hover accent */
+.process-card {
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  border-radius: 16px;
+}
+
+.process-card:hover { border-color: rgba(0, 163, 204, 0.3); }
+
+
+/* ── SECTION 3: PROJECTS ──────────────────────────────────── */
+
+/* Full-width wrapper capped at 1200px — leaves room for the dock */
+.project-Section {
+  width: 100%;
+  max-width: 1200px;
+  height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  padding: 0 40px;
+}
+
+/* Left: image preview panel (wider) | Right: tab sidebar (narrower) */
+.projectContainer {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 32px;
+  width: 100%;
+  height: 70%;
+  max-height: 500px;
+  align-items: stretch;
+}
+
+/* Rounded container that clips the sliding project images */
+.project-preview-card {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 30px;
+  overflow: hidden;
+  height: 100%;
+}
+
+/* Horizontal strip — translated by GSAP when switching projects */
+.project-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+/* Each project occupies exactly one track-width slot */
+.project-slide-item {
+  min-width: 100%;
+  width: 100%;
+  height: 100%;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.project-slide-content h2 { font-family: "Nunito", sans-serif; font-size: 24px; color: #ffffff; margin-bottom: 8px; }
+.project-slide-content p  { font-size: 14px; line-height: 1.6; color: rgba(255, 255, 255, 0.65); margin-bottom: 20px; }
+
+/* Row of Live / Code / Case Study buttons at the bottom of each slide */
+.project-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Scrollable list of project tabs on the right */
+.project-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+}
+
+/* Single row in the sidebar list */
+.project-tab-item {
+  height: 60px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.project-tab-item:hover  { background: rgba(255, 255, 255, 0.05); color: rgba(255, 255, 255, 0.9); }
+.project-tab-item.active { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.4); color: #ffffff; font-weight: 600; }
+
+/* Minimal scrollbar for the sidebar */
+.project-sidebar::-webkit-scrollbar         { width: 4px; }
+.project-sidebar::-webkit-scrollbar-track   { background: transparent; }
+.project-sidebar::-webkit-scrollbar-thumb   { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+.project-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
+
+/* Full-screen frosted backdrop for the case study modal */
+.case-study-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 4, 6, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.case-study-overlay.active { opacity: 1; pointer-events: auto; }
+
+/* The modal window that scales up from slightly below on open */
+.case-study-window {
+  width: 80vw;
+  height: 80vh;
+  background: #0d0e12;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  transform: scale(0.95) translateY(15px);
+  will-change: transform;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.case-study-overlay.active .case-study-window { transform: scale(1) translateY(0); }
+
+.case-study-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s, color 0.2s;
+}
+
+.case-study-close-btn:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+
+/* Scrollable reading area inside the case study modal */
+.case-study-scroll-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 50px 60px;
+  box-sizing: border-box;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.7;
+}
+
+.case-study-scroll-wrapper h1 { font-family: "Nunito", sans-serif; font-size: 32px; color: #ffffff; margin-bottom: 12px; }
+.case-study-scroll-wrapper h3 { font-size: 18px; color: var(--c-accent); margin: 24px 0 8px; font-family: monospace; }
+
+
+/* ── SECTION 4: TECH STACKS ───────────────────────────────── */
+
+.section.sec4 { padding: 30px 0; }
+
+.wheel-matrix-container { width: 100%; display: flex; flex-direction: column; gap: 35px; }
+
+.stacks-header { padding-left: 40px; }
+
+/* Fade mask so conveyor tracks dissolve at both horizontal edges */
+.endless-wheel-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100vw;
+  overflow: visible;
+  position: relative;
+  padding: 40px 0;
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+
+/* One row of the wheel — establishes the 3D perspective field */
+.wheel-conveyor {
+  display: flex;
+  width: 100%;
+  perspective: 1200px;
+  perspective-origin: center;
+  position: relative;
+  z-index: 10;
+  transition: z-index 0.3s steps(1, end);
+}
+
+/* Hovered row pops above its neighbours */
+.wheel-conveyor:hover { z-index: 1000; }
+
+/* The infinitely scrolling icon strip inside each conveyor */
+.wheel-track {
+  display: flex;
+  gap: 32px;
+  width: max-content;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+.scroll-left  .wheel-track { animation: scrollLeft  28s linear infinite; }
+.scroll-right .wheel-track { animation: scrollRight 28s linear infinite; }
+.wheel-conveyor:hover .wheel-track { animation-play-state: paused; }
+
+@keyframes scrollLeft  { from { transform: translate3d(0, 0, 0);    } to { transform: translate3d(-50%, 0, 0); } }
+@keyframes scrollRight { from { transform: translate3d(-50%, 0, 0); } to { transform: translate3d(0, 0, 0);    } }
+
+/* Individual glass icon card */
+.wheel-card {
+  width: 85px;
+  height: 85px;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  z-index: 20;
+  transform: translateZ(10px);
+  transition:
+    transform 0.4s var(--spring),
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.4s ease;
+}
+
+.wheel-card img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  filter: grayscale(25%) opacity(65%);
+  transition: filter 0.3s ease, transform 0.4s ease;
+}
+
+/* These brand icons are dark — invert them so they show on dark background */
+.wheel-card[data-tooltip="Next.js"] img,
+.wheel-card[data-tooltip="Express"] img,
+.wheel-card[data-tooltip="Vercel"]  img,
+.wheel-card[data-tooltip="GraphQL"] img,
+.wheel-card[data-tooltip="Django"]  img,
+.wheel-card[data-tooltip="GitHub"]  img { filter: invert(1) opacity(60%); }
+
+/* Card flies toward the viewer on hover — surfaces above all other rows */
+.wheel-card:hover {
+  transform: translateZ(140px) scale(1.35);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.2);
+  z-index: 99999;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+}
+
+.wheel-card:hover img { filter: grayscale(0%) opacity(100%); transform: scale(1.05); }
+
+/* Tech name tooltip rendered below each card via CSS attr() */
+.wheel-card::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: -34px;
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  background: rgba(8, 8, 10, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-family: monospace;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  white-space: nowrap;
+  z-index: 100000;
+}
+
+.wheel-card:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+
+/* ── SECTION 5: FAQ ───────────────────────────────────────── */
+
+.section.sec5 { padding: 60px 40px; }
+
+.faq-matrix-container {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 45px;
+}
+
+.faq-accordion-cluster { display: flex; flex-direction: column; gap: 16px; width: 100%; padding: 10px; }
+
+/* FAQ card — extends .tile with 3D context for the magnetic tilt effect */
+.faq-disclosure-node {
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  transform-style: preserve-3d;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.5s var(--spring);
+}
+
+.faq-disclosure-node.open { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.12); }
+
+.faq-static-block { padding: 24px 28px; display: flex; flex-direction: column; gap: 12px; }
+
+.faq-question-text {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  color: rgba(255, 255, 255, 0.85);
+  transition: color 0.3s ease;
+}
+
+.faq-disclosure-node.open .faq-question-text { color: var(--c-accent); }
+
+.faq-answer-text { font-size: 15px; line-height: 1.65; font-weight: 300; color: rgba(255, 255, 255, 0.8); letter-spacing: 0.2px; }
+
+
+/* ── SECTION 6: CTA ───────────────────────────────────────── */
+
+.section.sec6 { padding: 0 24px; min-height: 650px; }
+
+/* Centred flex column holding headline, button and social nodes */
+.cta-content-matrix {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  max-width: 850px;
+}
+
+.cta-text-cluster { display: flex; flex-direction: column; gap: 16px; }
+
+.cta-accent-title  { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; color: #00bdf2; }
+.cta-main-heading  { font-size: 38px; font-weight: 600; line-height: 1.35; letter-spacing: -0.8px; color: #e2e8f0; }
+
+.cta-action-bunker { display: flex; flex-direction: column; align-items: center; gap: 30px; }
+
+/* Primary pill CTA — white-on-light contrast for dark bg sections */
+.cta-handshake-btn-link { text-decoration: none; display: inline-block; }
+
+.cta-handshake-btn {
+  background: #dcdcdc;
+  border: none;
+  padding: 15px 36px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #111115;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.4s var(--spring),
+    background 0.3s ease,
+    box-shadow 0.4s ease;
+}
+
+.cta-handshake-btn:hover  { transform: scale(1.06) translateY(-2px); background: #ffffff; box-shadow: 0 12px 30px rgba(0, 223, 252, 0.15); }
+.cta-handshake-btn:active { transform: scale(0.98) translateY(0); }
+
+/* Row of social icon circles */
+.cta-status-nodes { display: flex; gap: 16px; justify-content: center; align-items: center; }
+
+/* Individual social link circle */
+.status-node {
+  width: 48px;
+  height: 48px;
+  background: rgba(245, 246, 248, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #2e3039;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    background 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.4s ease;
+}
+
+.status-node:hover       { background: #ffffff; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); }
+.status-node:active      { transform: translateY(-1px) scale(0.96); }
+.status-node svg         { transition: transform 0.3s ease; }
+.status-node:hover svg   { transform: scale(1.05); }
+
+/* Per-platform brand colour glow on hover */
+.status-node[aria-label="YouTube Channel"]:hover { color: #ff0000; transform: translateY(-5px) scale(1.1); box-shadow: 0 12px 24px rgba(255, 0, 0, 0.2); }
+.status-node[aria-label="GitHub Profile"]:hover   { color: #000000; transform: translateY(-5px) scale(1.1); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); }
+.status-node[aria-label="LinkedIn Profile"]:hover { color: #0077b5; transform: translateY(-5px) scale(1.1); box-shadow: 0 12px 24px rgba(0, 119, 181, 0.2); }
+
+/* Decorative dock at the bottom of the CTA section */
+.cta-floating-dock-wrapper {
+  position: absolute;
+  bottom: 45px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: max-content;
+}
+
+.cta-dock-pod {
+  background: rgba(245, 246, 248, 0.92);
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  padding: 8px 10px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Each item in the CTA dock pod */
+.dock-item {
+  background: transparent;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #3b3b45;
+  cursor: pointer;
+  transition: transform 0.3s var(--spring), color 0.2s ease, background 0.2s ease;
+}
+
+.dock-item:hover  { background: rgba(0, 0, 0, 0.04); color: #000000; transform: scale(1.1) translateY(-4px); }
+.dock-item.active { background: #b9d3eb; color: #1e3a5f; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05); }
+
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+/*
+   Breakpoints are based on real analytics for developer portfolio sites:
+   · Laptops (corporate):  1366×768 (~19%), 1920×1080 (~38%), 1440×900 (~11%)
+   · Mobile (iOS/Android): 375–430px wide (~27%)
+   · Tablet (iPad):        768–1024px wide (~5%)
+   Reference: StatCounter Global Stats — developer/tech category 2024-25
+*/
+
+/* ─ Small laptops: Intel Core i5 budget tier, older ThinkPads, HP ProBook ─ */
+@media (max-width: 1366px) {
+  .process-grid     { gap: 16px; height: 55vh; }
+  .wheel-card       { width: 72px; height: 72px; }
+  .wheel-card img   { width: 34px; height: 34px; }
+  .cta-main-heading { font-size: 34px; }
+  .cta-accent-title { font-size: 24px; }
+  .nav-dock-wrapper { bottom: 20px; }
+  .nav-dock         { padding: 6px 10px; gap: 8px; }
+  .nav-item         { width: 48px; height: 48px; }
+  .nav-active-pill  { width: 48px; height: 48px; }
+}
+
+/* ─ Short screen height: 1366×768 laptop (most common pain-point) ─ */
+@media (max-height: 768px) {
+  :root { --dock-bottom: 14px; }
+  .scroll-indicator      { bottom: 18px; }
+  .process-grid          { height: 50vh; gap: 12px; }
+  .projectContainer      { max-height: 360px; }
+  .faq-matrix-container  { gap: 20px; }
+  .faq-static-block      { padding: 14px 20px; }
+  .faq-question-text     { font-size: 16px; }
+  .cta-main-heading      { font-size: 28px; line-height: 1.3; }
+  .cta-accent-title      { font-size: 20px; }
+}
+
+/* ─ Tablet (iPad portrait / landscape): single-column project layout ─ */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .projectContainer { grid-template-columns: 1fr; height: auto; max-height: none; }
+  .project-sidebar  { flex-direction: row; overflow-x: auto; overflow-y: hidden; height: 80px; }
+  .project-tab-item { min-width: 180px; height: 100%; }
+  .process-grid     { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 1fr); }
+}
+
+/* ─ Mobile (iPhone 12–16, Android flagship range: 375–430px) ─ */
+@media (max-width: 768px) {
+  .section.sec2,
+  .section.sec5 { padding: 40px 20px; }
+
+  .process-grid         { grid-template-columns: 1fr; grid-template-rows: repeat(6, auto); height: auto; gap: 12px; }
+  .process-container    { gap: 20px; }
+
+  .project-Section      { padding: 0 20px; height: auto; gap: 16px; }
+  .projectContainer     { grid-template-columns: 1fr; grid-template-rows: auto auto; height: auto; max-height: none; gap: 16px; }
+  .project-preview-card { height: 260px; border-radius: 16px; }
+  .project-sidebar      { flex-direction: row; overflow-x: auto; overflow-y: hidden; height: 60px; gap: 8px; }
+  .project-tab-item     { min-width: 160px; height: 100%; flex-shrink: 0; }
+  .project-actions-row  { flex-direction: column; gap: 8px; }
+  .btn-primary, .btn-secondary, .btn-case-study { width: 100%; max-width: 200px; }
+
+  .faq-matrix-container  { gap: 24px; }
+  .faq-question-text     { font-size: 16px; }
+
+  .cta-accent-title  { font-size: 22px; }
+  .cta-main-heading  { font-size: 26px; line-height: 1.4; }
+  .cta-handshake-btn { padding: 13px 30px; font-size: 16px; }
+  .status-node       { width: 40px; height: 40px; }
+  .cta-status-nodes  { gap: 10px; }
+  .cta-floating-dock-wrapper { bottom: 20px; }
+  .dock-item         { width: 38px; height: 38px; border-radius: 12px; }
+
+  /* Stack wheel section vertically with reduced sizing on mobile */
+  .wheel-card       { width: 64px; height: 64px; border-radius: 14px; }
+  .wheel-card img   { width: 28px; height: 28px; }
+  .endless-wheel-workspace { padding: 20px 0; gap: 16px; }
+
+  .color-name { font-size: 1.5rem; }
+}
+
+/* ─ Retina & HiDPI (Apple M-series, QHD+ Windows): reduce blur GPU cost ─ */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  :root { --blur-md: 10px; --blur-lg: 12px; }
+  .tile, .faq-disclosure-node, .process-card { border-width: 0.5px; }
+}
+
+/* ─ Reduced motion: kills all animations for accessibility compliance ─ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .wheel-track  { animation-play-state: paused !important; }
+  .scroll-arrow { animation: none; }
+  .loader-spinner { animation: none; border-color: #0ae; }
+}
+
+/* ── SECURE CUSTOM CONTACT FORM INTEGRATION ──────────────── */
+.portfolio-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 500px;
+  background: var(--c-glass);
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid var(--c-border);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+}
+
+.form-group-row {
+  display: flex;
+  gap: 12px;
+}
+
+.portfolio-form input,
+.portfolio-form textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--c-border);
+  padding: 14px 16px;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s var(--spring), box-shadow 0.3s var(--spring);
+}
+
+.portfolio-form input:focus,
+.portfolio-form textarea:focus {
+  border-color: var(--c-accent);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
+}
+
+.form-status-feedback {
+  font-family: monospace;
+  font-size: 12px;
+  margin-top: 4px;
+  min-height: 18px;
+}
+
+@media (max-width: 768px) {
+  .form-group-row { flex-direction: column; gap: 16px; }
+}

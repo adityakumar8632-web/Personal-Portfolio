@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ── SEO & IDENTITY ── Replace all placeholder values below ── -->
+  <title>Your Name — Full Stack Engineer</title>
+  <meta name="description" content="Full stack engineer specialising in performance-first web systems, AI integrations, and scalable backend architecture.">
+  <meta property="og:title"       content="Your Name — Full Stack Engineer">
+  <meta property="og:description" content="Full stack engineer specialising in performance-first web systems.">
+  <meta property="og:image"       content="/og-image.png">
+  <meta property="og:type"        content="website">
+  <meta name="twitter:card"       content="summary_large_image">
+
+  <!-- ── FONTS ── Preconnect reduces DNS lookup time for Google Fonts ── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="portfolio.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+</head>
+<body>
+
+  <!-- Fixed SVG orb canvas — sits behind all sections at z-index -1 -->
+  <div class="bg-canvas-wrapper">
+    <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <filter id="orb-blur" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="95" result="blur"/>
+        </filter>
+      </defs>
+      <circle id="orb0" fill="#0033cc" filter="url(#orb-blur)" style="mix-blend-mode:screen"/>
+      <circle id="orb1" fill="#0066ff" filter="url(#orb-blur)" style="mix-blend-mode:screen"/>
+      <circle id="orb2" fill="#00a3cc" filter="url(#orb-blur)" style="mix-blend-mode:screen"/>
+      <circle id="orb3" fill="#00e5ff" filter="url(#orb-blur)" style="mix-blend-mode:screen"/>
+    </svg>
+  </div>
+
+  <!-- Full-screen loader — dismissed by GSAP after assets load -->
+  <div class="loading-screen" id="loader">
+    <div class="loader-spinner"></div>
+    <h2>LOADING...</h2>
+  </div>
+
+  <!-- Bottom navigation dock — slides up on first scroll -->
+  <div class="nav-dock-wrapper" id="dockWrapper">
+    <div class="nav-dock" id="dockContainer">
+      <div class="nav-active-pill" id="activePill"></div>
+      <div class="nav-item" data-index="0"><i data-lucide="home"></i><div class="tooltip">Home</div></div>
+      <div class="nav-item" data-index="1"><i data-lucide="package"></i><div class="tooltip">Process</div></div>
+      <div class="nav-item" data-index="2"><i data-lucide="folder-code"></i><div class="tooltip">Projects</div></div>
+      <div class="nav-item" data-index="3"><i data-lucide="monitor-cog"></i><div class="tooltip">Technical Stacks</div></div>
+      <div class="nav-item" data-index="4"><i data-lucide="message-circle-question"></i><div class="tooltip">Inquiry</div></div>
+      <div class="nav-item" data-index="5"><i data-lucide="send"></i><div class="tooltip">Contact</div></div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 1: HOME                                        -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <section class="section sec1">
+    <h1 class="color-name">For the ultimate Optimisation</h1>
+    <div class="scroll-indicator">
+      <span class="scroll-text">Scroll</span>
+      <svg class="scroll-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <polyline points="19 12 12 19 5 12"/>
+      </svg>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 2: PROCESS                                     -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <section class="section sec2">
+    <div class="process-container">
+      <header class="section-header">
+        <p class="section-label">The Resilience Workflow // Execution Lifecycle</p>
+        <h1 class="color-name">The Process</h1>
+      </header>
+      <div class="process-grid">
+        <div class="tile process-card"></div>
+        <div class="tile process-card"></div>
+        <div class="tile process-card"></div>
+        <div class="tile process-card"></div>
+        <div class="tile process-card"></div>
+        <div class="tile process-card"></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 3: PROJECTS                                    -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <section class="section sec3">
+    <div class="project-Section">
+      <header class="section-header">
+        <p class="section-label">Deployed Logs // Archive of Excellence</p>
+        <h1 class="color-name">Projects</h1>
+      </header>
+      <div class="projectContainer">
+        <div class="project-preview-card">
+          <div class="project-track" id="projectTrack"></div>
+        </div>
+        <div class="project-sidebar" id="projectSidebarContainer"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Case study modal — toggled via JS, outside the section flow -->
+  <div class="case-study-overlay" id="caseStudyOverlay">
+    <div class="case-study-window" id="caseStudyWindow">
+      <button class="case-study-close-btn" id="closeCaseStudyBtn" aria-label="Close case study">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <div class="case-study-scroll-wrapper" id="caseStudyScrollContent"></div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 4: TECHNICAL STACKS                            -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <section class="section sec4">
+    <div class="wheel-matrix-container">
+      <header class="section-header stacks-header">
+        <p class="section-label">Engineering Matrix // Endless 3D Loop</p>
+        <h1 class="color-name">Stacks</h1>
+      </header>
+
+      <div class="endless-wheel-workspace">
+
+        <!-- Row 1: Frontend — scrolls left -->
+        <div class="wheel-conveyor scroll-left">
+          <div class="wheel-track">
+            <div class="wheel-card" data-tooltip="HTML"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="CSS"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="JavaScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="React"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Next.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" alt="Next.js" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Tailwind"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind CSS" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Framer"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/framermotion/framermotion-original.svg" alt="Framer Motion" loading="lazy"></div>
+            <!-- Duplicate set for seamless loop -->
+            <div class="wheel-card" data-tooltip="HTML"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="CSS"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="JavaScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="React"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Next.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" alt="Next.js" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Tailwind"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind CSS" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Framer"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/framermotion/framermotion-original.svg" alt="Framer Motion" loading="lazy"></div>
+          </div>
+        </div>
+
+        <!-- Row 2: Backend — scrolls right -->
+        <div class="wheel-conveyor scroll-right">
+          <div class="wheel-track">
+            <div class="wheel-card" data-tooltip="Node.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Express"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" alt="Express" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="MongoDB"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="MongoDB" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="GraphQL"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg" alt="GraphQL" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Python"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Django"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg" alt="Django" loading="lazy"></div>
+            <!-- Duplicate set for seamless loop -->
+            <div class="wheel-card" data-tooltip="Node.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Express"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" alt="Express" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="MongoDB"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="MongoDB" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="GraphQL"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg" alt="GraphQL" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Python"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Django"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg" alt="Django" loading="lazy"></div>
+          </div>
+        </div>
+
+        <!-- Row 3: DevOps & Cloud — scrolls left -->
+        <div class="wheel-conveyor scroll-left">
+          <div class="wheel-track">
+            <div class="wheel-card" data-tooltip="Git"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="GitHub"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Docker"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="AWS"><img src="https://cdn.jsdelivr.net/gh/devicons@latest/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" alt="AWS" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Vercel"><img src="https://cdn.jsdelivr.net/gh/devicons@latest/icons/vercel/vercel-original.svg" alt="Vercel" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Linux"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" alt="Linux" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Bash"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" alt="Bash" loading="lazy"></div>
+            <!-- Duplicate set for seamless loop -->
+            <div class="wheel-card" data-tooltip="Git"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="GitHub"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Docker"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="AWS"><img src="https://cdn.jsdelivr.net/gh/devicons@latest/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" alt="AWS" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Vercel"><img src="https://cdn.jsdelivr.net/gh/devicons@latest/icons/vercel/vercel-original.svg" alt="Vercel" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Linux"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" alt="Linux" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Bash"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" alt="Bash" loading="lazy"></div>
+          </div>
+        </div>
+
+        <!-- Row 4: Design Tools — scrolls right -->
+        <div class="wheel-conveyor scroll-right">
+          <div class="wheel-track">
+            <div class="wheel-card" data-tooltip="Figma"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" alt="Figma" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Blender"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/blender/blender-original.svg" alt="Blender" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Figma"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" alt="Figma" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Blender"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/blender/blender-original.svg" alt="Blender" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Figma"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" alt="Figma" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Blender"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/blender/blender-original.svg" alt="Blender" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Figma"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" alt="Figma" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Blender"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/blender/blender-original.svg" alt="Blender" loading="lazy"></div>
+            <!-- Duplicate set for seamless loop -->
+            <div class="wheel-card" data-tooltip="Figma"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" alt="Figma" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Blender"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/blender/blender-original.svg" alt="Blender" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Figma"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" alt="Figma" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Blender"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/blender/blender-original.svg" alt="Blender" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Figma"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" alt="Figma" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Blender"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/blender/blender-original.svg" alt="Blender" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Figma"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" alt="Figma" loading="lazy"></div>
+            <div class="wheel-card" data-tooltip="Blender"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/blender/blender-original.svg" alt="Blender" loading="lazy"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 5: FAQ / INQUIRY                               -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <section class="section sec5">
+    <div class="faq-matrix-container">
+      <header class="section-header">
+        <p class="section-label">System Dialogue // Frequent Inquiries</p>
+        <h1 class="color-name">Inquiry</h1>
+      </header>
+      <div class="faq-accordion-cluster">
+
+        <div class="tile faq-disclosure-node">
+          <div class="faq-static-block">
+            <span class="faq-question-text">What is your typical project architecture workflow?</span>
+            <p class="faq-answer-text">I architect scalable web platforms utilising a modular Next.js/React frontend coupled with robust Node.js/Express backends. Every deployment runs through rigid version control matrices, automated CI/CD validation paths, and containerised Docker configurations to guarantee stable production runtime metrics.</p>
+          </div>
+        </div>
+
+        <div class="tile faq-disclosure-node">
+          <div class="faq-static-block">
+            <span class="faq-question-text">Do you optimise existing applications for performance bottlenecking?</span>
+            <p class="faq-answer-text">Yes. I execute full-scale system audits identifying performance flaws, heavy rendering operations, database scaling issues, and bundle bloat. Through asset streaming configurations, optimised database indexing protocols, and server-side state hydration, I systematically lower application latency times.</p>
+          </div>
+        </div>
+
+        <div class="tile faq-disclosure-node">
+          <div class="faq-static-block">
+            <span class="faq-question-text">How do you manage data security and system authentication?</span>
+            <p class="faq-answer-text">Data security is baked straight into the systemic foundation. I implement cross-origin resource protection patterns, stateless JWT session tokens with automatic refresh cycles, secure OAuth identity bridges, and strictly isolated database schema encryption vectors to protect client resources completely.</p>
+          </div>
+        </div>
+
+        <div class="tile faq-disclosure-node">
+          <div class="faq-static-block">
+            <span class="faq-question-text">Are you available for custom integration workflows or remote contract operations?</span>
+            <p class="faq-answer-text">Absolutely. I build custom backend microservices, specialised automation processing loops, and deep API bridge controllers tailored precisely to your tech stack. Reach out through the contact system panel below to baseline your technical specifications.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 6: CTA / CONTACT                               -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <section class="section sec6">
+    <div class="cta-content-matrix">
+
+      <header class="cta-text-cluster">
+        <h3 class="cta-accent-title">Ready to purge the bloat?</h3>
+        <h2 class="cta-main-heading">Let's map your system's weak points<br>and inject pure performance.</h2>
+      </header>
+
+      <div class="cta-action-bunker">
+        <!-- Secure Custom Form Endpoint -->
+        <form id="secureContactForm" class="portfolio-form">
+          <div class="form-group-row">
+            <input type="text" id="formName" name="name" placeholder="Name" required autocomplete="off">
+            <input type="email" id="formEmail" name="email" placeholder="Email Address" required autocomplete="off">
+          </div>
+          
+          <!-- Anti-bot Honeypot Field (Hidden completely from real users) -->
+          <div class="security-honeypot" style="display: none !important;" aria-hidden="true">
+            <input type="text" id="formHoneypot" name="b_honeypot" tabindex="-1" autocomplete="off">
+          </div>
+
+          <textarea id="formMessage" name="message" placeholder="Describe your technical specifications..." rows="4" required></textarea>
+          
+          <button type="submit" class="cta-handshake-btn" id="submitBtn">Initiate Recovery</button>
+        </form>
+        <div id="formStatusMessage" class="form-status-feedback"></div>
+
+        <div class="cta-status-nodes">
+          <a href="YOUR_YOUTUBE_URL_HERE" target="_blank" rel="noopener noreferrer" class="status-node" aria-label="YouTube Channel">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>
+          <a href="YOUR_GITHUB_URL_HERE" target="_blank" rel="noopener noreferrer" class="status-node" aria-label="GitHub Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          </a>
+          <a href="YOUR_LINKEDIN_URL_HERE" target="_blank" rel="noopener noreferrer" class="status-node" aria-label="LinkedIn Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── SCRIPTS ── Pinned versions prevent breaking changes from CDN updates ── -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.395.0/dist/umd/lucide.min.js"></script>
+  <script src="portfolio.js"></script>
+</body>
+</html>
